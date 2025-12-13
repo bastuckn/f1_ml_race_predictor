@@ -1,0 +1,13 @@
+# FastF1 cache (ignore contents, keep directory)
+data/raw/fastf1_cache/*
+!.gitkeep
+
+.venv
+
+# FastF1 cache files
+fastf1*
+
+# Python bytecode
+__pycache__/
+*.pyc
+*.pyo
