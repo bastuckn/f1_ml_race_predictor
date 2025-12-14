@@ -1,8 +1,9 @@
+.venv
+*.db
+
 # FastF1 cache (ignore contents, keep directory)
 data/raw/fastf1_cache/*
 !.gitkeep
-
-.venv
 
 # FastF1 cache files
 fastf1*
