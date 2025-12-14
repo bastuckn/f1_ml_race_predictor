@@ -1,6 +1,7 @@
+from datetime import datetime
+
 from sqlalchemy import Column, Integer, String, Float, DateTime
 from sqlalchemy.ext.declarative import declarative_base
-from datetime import datetime
 
 Base = declarative_base()
 
@@ -10,7 +11,8 @@ class RaceResult(Base):
     id = Column(Integer, primary_key=True)
     year = Column(Integer, nullable=False)
     round = Column(Integer, nullable=False)
-    track = Column(String, nullable=False)
+    
+    circuit = Column(String, nullable=False)
 
     driver = Column(String, nullable=False)
     team = Column(String, nullable=False)
