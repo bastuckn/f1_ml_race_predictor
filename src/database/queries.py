@@ -1,3 +1,4 @@
+from sqlalchemy.exc import IntegrityError
 from src.database.models import RaceResult
 from src.database.connection import get_db_session
 
@@ -14,10 +15,26 @@ def insert_race_results(results):
 
         session.commit()
 
-    except Exception as e:
+    except IntegrityError:
         session.rollback()
-        raise e
-    
+
+        # Delete existing rows for this race and retry
+        year = results[0]["year"]
+        round_ = results[0]["round"]
+
+        session.query(RaceResult).filter(
+            RaceResult.year == year,
+            RaceResult.round == round_
+        ).delete()
+
+        session.commit()
+
+        # Retry insert
+        for row in results:
+            record = RaceResult(**row)
+            session.add(record)
+
+        session.commit()
+
     finally:
         session.close()
-    

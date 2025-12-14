@@ -1,12 +1,16 @@
 from datetime import datetime
 
-from sqlalchemy import Column, Integer, String, Float, DateTime
+from sqlalchemy import Column, Integer, String, Float, DateTime, UniqueConstraint
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
 
 class RaceResult(Base):
     __tablename__ = "race_results"
+
+    __table_args__ = (
+        UniqueConstraint("year", "round", "driver", name="uix_race_driver"),
+    )
 
     id = Column(Integer, primary_key=True)
     year = Column(Integer, nullable=False)
