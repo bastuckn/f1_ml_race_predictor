@@ -1,2 +1,4 @@
 fastf1
 sqlalchemy
+pandas
+
