@@ -2,8 +2,9 @@
 *.db
 
 # FastF1 cache (ignore contents, keep directory)
-data/raw/fastf1_cache/*
 !.gitkeep
+data/raw/fastf1_cache/*
+data/processed/*
 
 # FastF1 cache files
 fastf1*
