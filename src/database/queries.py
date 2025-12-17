@@ -1,5 +1,6 @@
 from sqlalchemy.exc import IntegrityError
 from src.database.models import RaceResult
+from src.database.models import QualifyingResult
 from src.database.connection import get_db_session
 
 def insert_race_results(results):
@@ -32,6 +33,41 @@ def insert_race_results(results):
         # Retry insert
         for row in results:
             record = RaceResult(**row)
+            session.add(record)
+
+        session.commit()
+
+    finally:
+        session.close()
+
+def insert_qualifying_results(results):
+    """
+    results: list[dict]
+    """
+    session = get_db_session()
+
+    try:
+        for row in results:
+            record = QualifyingResult(**row)
+            session.add(record)
+
+        session.commit()
+
+    except IntegrityError:
+        session.rollback()
+
+        year = results[0]["year"]
+        round_ = results[0]["round"]
+
+        session.query(QualifyingResult).filter(
+            QualifyingResult.year == year,
+            QualifyingResult.round == round_
+        ).delete()
+
+        session.commit()
+
+        for row in results:
+            record = QualifyingResult(**row)
             session.add(record)
 
         session.commit()
