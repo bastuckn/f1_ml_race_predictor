@@ -1,0 +1,17 @@
+import numpy as np
+
+from src.feature_engineering.build_features import build_feature_table
+from src.training.train_model import train_model, save_model
+from src.training.evaluate import evaluate
+
+df = build_feature_table()
+
+model, x_test, y_test = train_model(df, test_year=2025)
+
+# Sanity check:
+print("Fraction of missing qualifying positions in test set:",
+      np.mean(np.isnan(x_test["quali_position"])))
+
+evaluate(model, x_test, y_test)
+
+save_model(model)

@@ -1,4 +1,5 @@
 fastf1
 sqlalchemy
 pandas
-
+joblib
+scikit-learn

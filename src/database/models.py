@@ -25,6 +25,27 @@ class RaceResult(Base):
     grid = Column(Integer)
     points = Column(Float)
 
+class QualifyingResult(Base):
+    __tablename__ = "qualifying_results"
+
+    __table_args__ = (
+        UniqueConstraint("year", "round", "driver", name="uix_quali_driver"),
+    )
+
+    id = Column(Integer, primary_key=True)
+    year = Column(Integer, nullable=False)
+    round = Column(Integer, nullable=False)
+    circuit = Column(String, nullable=False)
+
+    driver = Column(String, nullable=False)
+    team = Column(String, nullable=False)
+
+    position = Column(Integer)
+    q1_time = Column(Float)
+    q2_time = Column(Float)
+    q3_time = Column(Float)
+
+
 class Prediction(Base):
     __tablename__ = "predictions"
 
