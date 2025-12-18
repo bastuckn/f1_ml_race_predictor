@@ -77,11 +77,12 @@ def build_feature_table(include_qualifying: bool = True, debug: bool = False):
     # --- Encode categoricals
     df = encode_categoricals(df)
 
-    # --- Sanity checks (optional)
+    # --- Sanity checks
     if debug:
         print("Null counts:")
         print(df.isnull().sum().sort_values(ascending=False).head(15))
-        print("\nDescribe:")
+
+        print("\nFeature describe:")
         print(df.describe())
 
         if include_qualifying:
