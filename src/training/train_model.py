@@ -6,33 +6,8 @@ from sklearn.ensemble import RandomForestRegressor
 
 from src.training.split import time_based_split
 
-QUALI_FEATURES = [
-    "quali_position",
-    "quali_gap_to_pole",
-    "driver_avg_quali_pos",
-    "team_avg_quali_pos",
-]
-
-def prepare_training_data(df):
-    """
-    Create a mixed dataset:
-    - Rows with qualifying features
-    - Rows without qualifying features (NaNs)
-    """
-
-    df_with_quali = df.copy()
-
-    df_no_quali = df.copy()
-    df_no_quali[QUALI_FEATURES] = np.nan
-
-    combined_df = pd.concat([df_with_quali, df_no_quali], ignore_index=True)
-
-    return combined_df
-
-
 def train_model(df, test_year=2025):
     # Create mixed training data
-    df = prepare_training_data(df)
 
     # Time-based split
     train_df, test_df = time_based_split(df, test_year)
@@ -41,8 +16,11 @@ def train_model(df, test_year=2025):
     y_train = train_df["position"]
     y_test = test_df["position"]
 
-    x_train = train_df.drop(columns=["position", "points"])
-    x_test = test_df.drop(columns=["position", "points"])
+    omitted_columns = ["position", "points", "q1_time", "q2_time", "q3_time", "quali_position", "grid"]
+    x_train = train_df.drop(columns=omitted_columns)
+    x_test = test_df.drop(columns=omitted_columns)
+
+    print("Training on features: \n", x_test.columns)
 
     model = RandomForestRegressor(
         n_estimators=400,

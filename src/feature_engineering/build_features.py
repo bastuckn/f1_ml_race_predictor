@@ -6,7 +6,6 @@ from src.database.models import RaceResult, QualifyingResult
 from src.feature_engineering.aggregations import (
     add_driver_form,
     add_team_form,
-    add_quali_gap,
     add_driver_quali_form,
     add_team_quali_form,
 )
@@ -48,31 +47,26 @@ def load_qualifying_results():
     } for q in rows])
 
 
-def build_feature_table(include_qualifying: bool = True, debug: bool = False):
+def build_feature_table(debug: bool = False):
     # Load base race data (always required)
     race_df = load_race_results()
 
     # Optionally merge qualifying data
-    if include_qualifying:
-        quali_df = load_qualifying_results()
+    quali_df = load_qualifying_results()
 
-        df = race_df.merge(
-            quali_df,
-            on=["year", "round", "driver", "team", "circuit"],
-            how="left"
-        )
-    else:
-        df = race_df.copy()
+    df = race_df.merge(
+        quali_df,
+        on=["year", "round", "driver", "team", "circuit"],
+        how="left"
+    )
 
     # --- Race-based rolling features (leakage-safe)
     df = add_driver_form(df)
     df = add_team_form(df)
 
-    # --- Qualifying-based features (optional, NaN-safe)
-    if include_qualifying:
-        df = add_quali_gap(df)
-        df = add_driver_quali_form(df)
-        df = add_team_quali_form(df)
+    # --- Qualifying-based features
+    df = add_driver_quali_form(df)
+    df = add_team_quali_form(df)
 
     # --- Encode categoricals
     df = encode_categoricals(df)
@@ -85,9 +79,8 @@ def build_feature_table(include_qualifying: bool = True, debug: bool = False):
         print("\nFeature describe:")
         print(df.describe())
 
-        if include_qualifying:
-            print("\nQualifying coverage:")
-            print(df["quali_position"].isna().mean())
+        print("\nQualifying coverage:")
+        print(df["quali_position"].isna().mean())
 
     return df
 
