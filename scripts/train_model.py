@@ -6,8 +6,8 @@ from src.training.evaluate import evaluate
 
 df = build_feature_table()
 
-model, x_test, y_test = train_model(df, test_year=2025)
+model, x_test, y_test, feature_list = train_model(df, test_year=2025)
 
 evaluate(model, x_test, y_test)
 
-save_model(model)
+save_model(model, feature_list)
