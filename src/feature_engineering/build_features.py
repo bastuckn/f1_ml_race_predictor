@@ -51,7 +51,7 @@ def build_feature_table(debug: bool = False):
     # Load base race data (always required)
     race_df = load_race_results()
 
-    # Optionally merge qualifying data
+    # Merge qualifying data into same rows
     quali_df = load_qualifying_results()
 
     df = race_df.merge(
@@ -60,16 +60,7 @@ def build_feature_table(debug: bool = False):
         how="left"
     )
 
-    # --- Race-based rolling features (leakage-safe)
-    df = add_driver_form(df)
-    df = add_team_form(df)
-
-    # --- Qualifying-based features
-    df = add_driver_quali_form(df)
-    df = add_team_quali_form(df)
-
-    # --- Encode categoricals
-    df = encode_categoricals(df)
+    df = additional_features(df)
 
     # --- Sanity checks
     if debug:
@@ -84,6 +75,19 @@ def build_feature_table(debug: bool = False):
 
     return df
 
+def additional_features(df):
+    # --- Race-based rolling features (leakage-safe)
+    df = add_driver_form(df)
+    df = add_team_form(df)
+
+    # --- Qualifying-based features
+    df = add_driver_quali_form(df)
+    df = add_team_quali_form(df)
+
+    # --- Encode categoricals
+    df = encode_categoricals(df)
+
+    return df
 
 def save_features(df, path="data/processed/features.csv"):
     df.to_csv(path, index=False)

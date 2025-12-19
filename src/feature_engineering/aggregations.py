@@ -11,7 +11,7 @@ def add_driver_form(df, window=5):
 
     return df
 
-def add_team_form(df, window=5):
+def add_team_form(df, window=5): # TODO fix - why is the team average not the same for both drivers?
     df = df.sort_values(["team", "year", "round"])
 
     df["team_avg_finish"] = (
@@ -37,7 +37,7 @@ def add_driver_quali_form(df, window=5):
 
     return df
 
-def add_team_quali_form(df, window=5):
+def add_team_quali_form(df, window=5): # TODO fix - why is the team average not the same for both drivers?
     df = df.sort_values(["team", "year", "round"])
 
     df["team_avg_quali_pos"] = (

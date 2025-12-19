@@ -3,8 +3,8 @@ from src.data_ingestion.store_race_results import store_race_results
 
 fastf1.Cache.enable_cache("data/raw/fastf1_cache")
 
-START_YEAR = 2020
-END_YEAR = 2025
+START_YEAR = 2024
+END_YEAR = 2026
 
 
 def backfill():

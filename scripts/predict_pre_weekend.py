@@ -1,18 +1,23 @@
 import argparse
 import pandas as pd
 import joblib
+import fastf1
+
 from src.feature_engineering.build_features import build_feature_table
 
 MODEL_NAME = "race_position_model_2025-12-18.pkl"
 
 def main(year: int, round_: int):
-    # --------------------------------------------------
+
     # 1. Load feature table (pre-weekend features only)
-    # --------------------------------------------------
     df_features = build_feature_table()
 
-    # Keep identifiers for merging/output
-    identifiers = ["driver_id", "team_id", "circuit", "year", "round"]
+    # see if race is past or future:
+    if not race_exists(year, round_, df_features):
+        df_last = get_latest_known_race(df_features)
+        df_last = adapt_for_future_race(df_last, year, round_)
+        df_features = pd.concat([df_features,df_last])
+        # TODO: hardcode new lineup for 2026?
 
     # Select session we want to predict
     df_session = df_features[
@@ -20,33 +25,24 @@ def main(year: int, round_: int):
         (df_features["round"] == round_)
     ].copy()
 
-    if df_session.empty:
-        raise ValueError(f"No features found for Year={year}, Round={round_}")
-
-    # --------------------------------------------------
     # 2. Load trained pre-weekend model
-    # --------------------------------------------------
     bundle = joblib.load("models/" + MODEL_NAME)
     model = bundle["model"]
     feature_cols = bundle["features"]  # pre-weekend features used in training
 
-    # --------------------------------------------------
     # 3. Select feature columns for prediction
-    # --------------------------------------------------
     missing_cols = [c for c in feature_cols if c not in df_session.columns]
     if missing_cols:
         raise ValueError(f"Missing columns in feature table: {missing_cols}")
+    
+    x = df_session[feature_cols]
 
-    X = df_session[feature_cols]
+    pd.set_option('display.max_columns', None)
 
-    # --------------------------------------------------
     # 4. Make predictions
-    # --------------------------------------------------
-    df_session["position_pred"] = model.predict(X)
+    df_session["position_pred"] = model.predict(x)
 
-    # --------------------------------------------------
     # 5. Output predictions
-    # --------------------------------------------------
     df_session = add_driver_columns(df_session)
     df_session = add_team_columns(df_session)
    
@@ -83,6 +79,39 @@ def add_team_columns(df_session):
     df_session["team_id"] = df_session[team_cols].idxmax(axis=1).str.replace("team_", "")
 
     return df_session
+
+def race_exists(year, round, df_features):
+    return ((df_features["year"] == year) & (df_features["round"] == round)).any()
+
+def get_latest_known_race(df_features):
+    return (
+        df_features
+        .sort_values(["year", "round"])
+        .groupby(["year", "round"])
+        .tail(20)  # one row per driver
+        .iloc[-20:]
+    )
+
+def adapt_for_future_race(df_last, target_year, target_round):
+    df_future = df_last.copy()
+
+    df_future["year"] = target_year
+    df_future["round"] = target_round
+
+    # Reset circuit one-hot
+    circuit_cols = [c for c in df_future.columns if c.startswith("circuit_")]
+    df_future[circuit_cols] = 0
+
+    target_circuit = determine_circuit(target_year, target_round)
+
+    # Activate target circuit
+    df_future[f"circuit_{target_circuit}"] = 1
+
+    return df_future
+
+def determine_circuit(year, round):
+    schedule = fastf1.get_event(year, round)
+    return schedule["EventName"]
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Predict pre-weekend F1 race outcome")
