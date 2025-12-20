@@ -10,13 +10,14 @@ niklas.bastuck@gmail.com
 - Data ingestion from F1 data sources
 - Feature engineering and dataset preparation
 - Model training, evaluation, and versioning
+- Prediction step and output
 
 ### To-Do:
 
-- Also output actual race result
 - Background prediction service on a Raspberry Pi
 - Persistent storage of predictions
 - An API to retrieve the latest predictions
+- Hard-code driver lineup for 2026?
 
 # Install Dependencies
 

@@ -12,8 +12,10 @@ def main(year: int, round_: int):
     # 1. Load feature table (pre-weekend features only)
     df_features = build_feature_table()
 
+    future_race = not race_exists(year, round_, df_features)
+
     # see if race is past or future:
-    if not race_exists(year, round_, df_features):
+    if future_race:
         df_last = get_latest_known_race(df_features)
         df_last = adapt_for_future_race(df_last, year, round_)
         df_features = pd.concat([df_features,df_last])
@@ -53,11 +55,21 @@ def main(year: int, round_: int):
     )
     df_out.insert(0, "P", range(1, len(df_out) + 1))
     df_out["position_pred"] = df_out["position_pred"].round(2)
+
+    df_actual = get_actual_results(df_session, year, round_)
+
+    if df_actual is not None and not future_race:
+        df_out = df_out.merge(df_actual, on="driver_id", how="left")
+
+        # Prediction error
+        df_out["Δ"] = df_out["Actual Pos"] - df_out["P"]
+    
     df_out = df_out.rename(columns={
         "driver_id": "Driver",
         "team_id": "Team",
         "position_pred": "Predicted Pos"
     })
+
     year = get_year(df_session)
     circuit = get_circuit(df_session)
 
@@ -95,8 +107,8 @@ def add_team_columns(df_session):
 
     return df_session
 
-def race_exists(year, round, df_features):
-    return ((df_features["year"] == year) & (df_features["round"] == round)).any()
+def race_exists(year, round_, df_features):
+    return ((df_features["year"] == year) & (df_features["round"] == round_)).any()
 
 def get_latest_known_race(df_features):
     return (
@@ -124,10 +136,21 @@ def adapt_for_future_race(df_last, target_year, target_round):
 
     return df_future
 
-def determine_circuit(year, round):
+def determine_circuit(year, round_):
     fastf1.Cache.enable_cache("data/raw/fastf1_cache")
-    schedule = fastf1.get_event(year, round)
+    schedule = fastf1.get_event(year, round_)
     return schedule["EventName"]
+
+def get_actual_results(df_all, year, round_):
+    df_actual = df_all[
+        (df_all["year"] == year) &
+        (df_all["round"] == round_)
+    ][["driver_id", "position"]]
+
+    if df_actual.empty:
+        return None
+
+    return df_actual.rename(columns={"position": "Actual Pos"})
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Predict pre-weekend F1 race outcome")
