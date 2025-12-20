@@ -5,9 +5,7 @@ import fastf1
 
 from src.feature_engineering.build_features import build_feature_table
 
-MODEL_NAME = "race_position_model_2025-12-18.pkl"
-
-def main(year: int, round_: int):
+def main(year: int, round_: int, model_path: str):
 
     # 1. Load feature table (pre-weekend features only)
     df_features = build_feature_table()
@@ -28,7 +26,7 @@ def main(year: int, round_: int):
     ].copy()
 
     # 2. Load trained pre-weekend model
-    bundle = joblib.load("models/" + MODEL_NAME)
+    bundle = joblib.load(model_path)
     model = bundle["model"]
     feature_cols = bundle["features"]  # pre-weekend features used in training
 
@@ -56,6 +54,11 @@ def main(year: int, round_: int):
     df_out.insert(0, "P", range(1, len(df_out) + 1))
     df_out["position_pred"] = df_out["position_pred"].round(2)
 
+    print_results(df_session, year, round_, future_race, df_out)
+
+    return 0
+
+def print_results(df_session, year, round_, future_race, df_out):
     df_actual = get_actual_results(df_session, year, round_)
 
     if df_actual is not None and not future_race:
@@ -75,7 +78,6 @@ def main(year: int, round_: int):
 
     print(f"\n🏎️ Predicted race result for the {year} {circuit}:\n")
     print(df_out.to_string(index=False))
-
 
 def get_year(df_session):
     return df_session["year"].iloc[0]
@@ -156,5 +158,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Predict pre-weekend F1 race outcome")
     parser.add_argument("year", type=int, help="Season year")
     parser.add_argument("round", type=int, help="Round number")
+    parser.add_argument("model_path", type=str, help="Path to the model to be used for prediction")
     args = parser.parse_args()
-    main(args.year, args.round)
+    main(args.year, args.round, args.model_path)

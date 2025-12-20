@@ -80,27 +80,27 @@ Output:
 ```
 🏎️ Predicted race result for the 2025 Abu Dhabi Grand Prix:
 
- P Driver            Team  Predicted Pos
- 1    NOR         McLaren           4.09
- 2    VER Red Bull Racing           4.46
- 3    RUS        Mercedes           4.54
- 4    ANT        Mercedes           6.42
- 5    PIA         McLaren           6.78
- 6    LEC         Ferrari           8.80
- 7    ALO    Aston Martin           9.98
- 8    HAD    Racing Bulls          10.69
- 9    LAW    Racing Bulls          10.96
-10    GAS          Alpine          12.02
-11    SAI        Williams          12.85
-12    HUL     Kick Sauber          12.88
-13    OCO    Haas F1 Team          13.24
-14    BEA    Haas F1 Team          13.37
-15    HAM         Ferrari          13.64
-16    TSU Red Bull Racing          14.18
-17    STR    Aston Martin          14.27
-18    ALB        Williams          14.56
-19    COL          Alpine          14.86
-20    BOR     Kick Sauber          15.03
+ P Driver            Team  Predicted Pos  Actual Pos  Δ
+ 1    NOR         McLaren           4.09           3  2
+ 2    VER Red Bull Racing           4.46           1 -1
+ 3    RUS        Mercedes           4.54           5  2
+ 4    ANT        Mercedes           6.42          15 11
+ 5    PIA         McLaren           6.78           2 -3
+ 6    LEC         Ferrari           8.80           4 -2
+ 7    ALO    Aston Martin           9.98           6 -1
+ 8    HAD    Racing Bulls          10.69          17  9
+ 9    LAW    Racing Bulls          10.96          18  9
+10    GAS          Alpine          12.02          19  9
+11    SAI        Williams          12.85          13  2
+12    HUL     Kick Sauber          12.88           9 -3
+13    OCO    Haas F1 Team          13.24           7 -6
+14    BEA    Haas F1 Team          13.37          12 -2
+15    HAM         Ferrari          13.64           8 -7
+16    TSU Red Bull Racing          14.18          14 -2
+17    STR    Aston Martin          14.27          10 -7
+18    ALB        Williams          14.56          16 -2
+19    COL          Alpine          14.86          20  1
+20    BOR     Kick Sauber          15.03          11 -9
 ```
 
 Feel free to add your own models and code!
