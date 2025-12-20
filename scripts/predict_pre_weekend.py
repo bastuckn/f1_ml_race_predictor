@@ -110,6 +110,7 @@ def adapt_for_future_race(df_last, target_year, target_round):
     return df_future
 
 def determine_circuit(year, round):
+    fastf1.Cache.enable_cache("data/raw/fastf1_cache")
     schedule = fastf1.get_event(year, round)
     return schedule["EventName"]
 
