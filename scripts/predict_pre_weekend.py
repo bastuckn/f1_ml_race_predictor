@@ -46,9 +46,24 @@ def main(year: int, round_: int):
     df_session = add_driver_columns(df_session)
     df_session = add_team_columns(df_session)
    
-    df_out = df_session[["driver_id", "team_id"] + ["position_pred"]].sort_values("position_pred")
-    print("I have predicted the following race result for the " + str(get_year(df_session)) + " " + str(get_circuit(df_session)) + ": \n")
+    df_out = (
+        df_session[["driver_id", "team_id", "position_pred"]]
+        .sort_values("position_pred")
+        .reset_index(drop=True)
+    )
+    df_out.insert(0, "P", range(1, len(df_out) + 1))
+    df_out["position_pred"] = df_out["position_pred"].round(2)
+    df_out = df_out.rename(columns={
+        "driver_id": "Driver",
+        "team_id": "Team",
+        "position_pred": "Predicted Pos"
+    })
+    year = get_year(df_session)
+    circuit = get_circuit(df_session)
+
+    print(f"\n🏎️ Predicted race result for the {year} {circuit}:\n")
     print(df_out.to_string(index=False))
+
 
 def get_year(df_session):
     return df_session["year"].iloc[0]

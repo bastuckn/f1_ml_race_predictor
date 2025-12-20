@@ -77,29 +77,29 @@ python -m scripts/predict_pre_weekend.py 2025 24
 Output:
 
 ```
-I have predicted the following race result for the 2025 Abu Dhabi Grand Prix: 
+🏎️ Predicted race result for the 2025 Abu Dhabi Grand Prix:
 
-driver_id         team_id  position_pred
-      VER Red Bull Racing       4.678093
-      RUS        Mercedes       4.861887
-      NOR         McLaren       5.667517
-      ANT        Mercedes       7.645915
-      PIA         McLaren       8.829029
-      LEC         Ferrari       9.559160
-      LAW    Racing Bulls       9.836621
-      HAD    Racing Bulls      10.011451
-      ALO    Aston Martin      10.437706
-      GAS          Alpine      12.064814
-      HUL     Kick Sauber      12.569693
-      SAI        Williams      12.608828
-      TSU Red Bull Racing      12.723687
-      BEA    Haas F1 Team      12.996972
-      STR    Aston Martin      13.133002
-      HAM         Ferrari      13.532930
-      COL          Alpine      13.711434
-      OCO    Haas F1 Team      13.739774
-      ALB        Williams      14.047822
-      BOR     Kick Sauber      14.811819
+ P Driver            Team  Predicted Pos
+ 1    NOR         McLaren           4.09
+ 2    VER Red Bull Racing           4.46
+ 3    RUS        Mercedes           4.54
+ 4    ANT        Mercedes           6.42
+ 5    PIA         McLaren           6.78
+ 6    LEC         Ferrari           8.80
+ 7    ALO    Aston Martin           9.98
+ 8    HAD    Racing Bulls          10.69
+ 9    LAW    Racing Bulls          10.96
+10    GAS          Alpine          12.02
+11    SAI        Williams          12.85
+12    HUL     Kick Sauber          12.88
+13    OCO    Haas F1 Team          13.24
+14    BEA    Haas F1 Team          13.37
+15    HAM         Ferrari          13.64
+16    TSU Red Bull Racing          14.18
+17    STR    Aston Martin          14.27
+18    ALB        Williams          14.56
+19    COL          Alpine          14.86
+20    BOR     Kick Sauber          15.03
 ```
 
 Feel free to add your own models and code!

@@ -1,4 +1,4 @@
-def add_driver_form(df, window=4):
+def add_driver_form(df, window=5):
     df = df.sort_values(["driver", "year", "round"])
 
     df["driver_avg_finish"] = (
@@ -11,7 +11,7 @@ def add_driver_form(df, window=4):
 
     return df
 
-def add_team_form(df, window=4):
+def add_team_form(df, window=5):
     # 1. Team average quali per race
     team_race = (
         df
@@ -39,7 +39,7 @@ def add_team_form(df, window=4):
 
     return df
 
-def add_driver_quali_form(df, window=4):
+def add_driver_quali_form(df, window=5):
     df = df.sort_values(["driver", "year", "round"])
 
     df["driver_avg_quali_pos"] = (
@@ -52,7 +52,7 @@ def add_driver_quali_form(df, window=4):
 
     return df
 
-def add_team_quali_form(df, window=4):
+def add_team_quali_form(df, window=5):
     # 1. Team average quali per race
     team_quali = (
         df
