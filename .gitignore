@@ -1,6 +1,7 @@
 .venv
 *.db
 *.pkl
+*.csv#
 
 # FastF1 cache (ignore contents, keep directory)
 !.gitkeep

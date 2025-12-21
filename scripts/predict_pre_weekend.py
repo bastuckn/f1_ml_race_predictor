@@ -14,10 +14,15 @@ def main(year: int, round_: int, model_path: str):
 
     # see if race is past or future:
     if future_race:
-        df_last = get_latest_known_race(df_features)
-        df_last = adapt_for_future_race(df_last, year, round_)
-        df_features = pd.concat([df_features,df_last])
-        # TODO: hardcode new lineup for 2026?
+        if ((year == 2026) and (round_ == 1)):
+            # hard-coded lineup for 2026, round 1, to bridge the gap befor ethe first race
+            # alternatively, read in the free practice results to also get some data
+            df_features = pd.read_csv("data/2026_1.csv")
+        else:
+            df_last = get_latest_known_race(df_features)
+            df_last = adapt_for_future_race(df_last, year, round_)
+            df_features = pd.concat([df_features,df_last])
+            # df_features[df_features["year"] == 2026].to_csv(path_or_buf="data/2026_1.csv")
 
     # Select session we want to predict
     df_session = df_features[
