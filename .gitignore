@@ -4,9 +4,7 @@
 *.csv#
 
 # FastF1 cache (ignore contents, keep directory)
-!.gitkeep
-data/raw/fastf1_cache/*
-data/processed/*
+data/*
 
 # FastF1 cache files
 fastf1*
@@ -15,3 +13,5 @@ fastf1*
 __pycache__/
 *.pyc
 *.pyo
+
+!.gitkeep

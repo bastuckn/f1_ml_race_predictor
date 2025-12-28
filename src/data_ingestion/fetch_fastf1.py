@@ -1,7 +1,7 @@
 import fastf1
 from fastf1 import get_session
 
-# Enable cache (do this ONCE at import time)
+# Enable cache
 fastf1.Cache.enable_cache("data/raw/fastf1_cache")
 
 def load_session(year: int, round: int, session_name: str):
