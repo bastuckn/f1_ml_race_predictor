@@ -43,7 +43,7 @@ python -m scripts/fetch_latest_race.py
 To populate the cache for entire season, run the following:
 
 ```
-python3 -m scripts.backfill.backfill_races 2024 2025 R
+python3 -m scripts.backfill_races 2024 2025 R
 ```
 
 - This will populate your database with the latest available sessions.
