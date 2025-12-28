@@ -11,6 +11,7 @@ niklas.bastuck@gmail.com
 - Feature engineering and dataset preparation
 - Model training, evaluation, and versioning
 - Prediction step and output
+- Deployment and remote access on Raspi server via `connect.raspberrypi.com`
 
 ### To-Do:
 
@@ -33,8 +34,16 @@ pip install -r requirements.txt
 
 Run the script to fetch historical race results, practice sessions, and qualifying data:
 
+Example: latest race
+
 ```
 python -m scripts/fetch_latest_race.py
+```
+
+To populate the cache for entire season, run the following:
+
+```
+python3 -m scripts.backfill.backfill_races 2024 2025 R
 ```
 
 - This will populate your database with the latest available sessions.
