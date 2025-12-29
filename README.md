@@ -40,20 +40,25 @@ Example: latest race
 python -m scripts/fetch_latest_race.py
 ```
 
-To populate the cache for entire season, run the following:
-
-```
-python3 -m scripts.backfill_races 2024 2025 R
-```
-
 - This will populate your database with the latest available sessions.
+
+To populate the cache for entire seasons, run for example the following:
+
+```
+python3 -m scripts.backfill 2024 2025 R
+python3 -m scripts.backfill 2024 2025 Q
+```
 
 ## Build Feature Table
 
 Create the ML feature table (pre-weekend features only):
 
 ```
-python -m scripts/build_feature_table.py
+python3 -m scripts.bootstrap_db
+```
+and
+```
+python3 -m scripts.build_features
 ```
 
 - Omits current weekend qualifying data (q1_time, q2_time, q3_time, quali_position)
