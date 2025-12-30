@@ -11,6 +11,7 @@ niklas.bastuck@gmail.com
 - Feature engineering and dataset preparation
 - Model training, evaluation, and versioning
 - Prediction step and output
+- Hard-code driver lineup for 2026 (to bridge the gap for the first race)
 - Deployment and remote access on Raspi server via `connect.raspberrypi.com`
 
 ### To-Do:
@@ -18,7 +19,6 @@ niklas.bastuck@gmail.com
 - Background prediction service on a Raspberry Pi
 - Persistent storage of predictions
 - An API to retrieve the latest predictions
-- Hard-code driver lineup for 2026?
 
 # Install Dependencies
 
@@ -27,6 +27,8 @@ python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 ```
+
+Alternatively, you can run `./scripts/setup/install_dependencies.sh` from the project root.
 
 # Using the Predictor
 
@@ -37,7 +39,7 @@ Run the script to fetch historical race results, practice sessions, and qualifyi
 Example: latest race
 
 ```
-python -m scripts/fetch_latest_race.py
+python3 -m scripts/fetch_latest_race.py
 ```
 
 - This will populate your database with the latest available sessions.
@@ -48,6 +50,8 @@ To populate the cache for entire seasons, run for example the following:
 python3 -m scripts.backfill 2024 2025 R
 python3 -m scripts.backfill 2024 2025 Q
 ```
+
+Alternatively, you can run `./scripts/setup/backfill.sh` from the project root.
 
 ## Build Feature Table
 
@@ -65,17 +69,22 @@ python3 -m scripts.build_features
 - Computes historical features like driver_avg_finish, team_avg_finish, etc.
 - Outputs a table ready for training or prediction.
 
+Alternatively, you can run `./scripts/setup/build_features.sh` from the project root.
+
+
 ## Train the Pre-Weekend Model
 
 Train the model using only historical pre-weekend features:
 
 ```
-python -m scripts/train_model.py
+python3 -m scripts/train_model.py
 ```
 
 - Saves a model bundle (e.g., models/race_model_pre_quali.pkl) including:
   - The trained RandomForestRegressor
   - The feature columns used for training (pre_weekend_feature_columns)
+
+Alternatively, you can run `./scripts/setup/train_model.sh` from the project root.
 
 ## Predict Race Outcome (Pre-Weekend)
 
@@ -94,27 +103,27 @@ Output:
 ```
 🏎️ Predicted race result for the 2025 Abu Dhabi Grand Prix:
 
- P Driver            Team  Predicted Pos  Actual Pos  Δ
- 1    NOR         McLaren           4.09           3  2
- 2    VER Red Bull Racing           4.46           1 -1
- 3    RUS        Mercedes           4.54           5  2
- 4    ANT        Mercedes           6.42          15 11
- 5    PIA         McLaren           6.78           2 -3
- 6    LEC         Ferrari           8.80           4 -2
- 7    ALO    Aston Martin           9.98           6 -1
- 8    HAD    Racing Bulls          10.69          17  9
- 9    LAW    Racing Bulls          10.96          18  9
-10    GAS          Alpine          12.02          19  9
-11    SAI        Williams          12.85          13  2
-12    HUL     Kick Sauber          12.88           9 -3
-13    OCO    Haas F1 Team          13.24           7 -6
-14    BEA    Haas F1 Team          13.37          12 -2
-15    HAM         Ferrari          13.64           8 -7
-16    TSU Red Bull Racing          14.18          14 -2
-17    STR    Aston Martin          14.27          10 -7
-18    ALB        Williams          14.56          16 -2
-19    COL          Alpine          14.86          20  1
-20    BOR     Kick Sauber          15.03          11 -9
+ P Driver            Team  Predicted Pos  Actual Pos   Δ
+ 1    NOR         McLaren           4.41           3   2
+ 2    RUS        Mercedes           4.73           5   3
+ 3    ANT        Mercedes           6.15          15  12
+ 4    PIA         McLaren           6.97           2  -2
+ 5    VER Red Bull Racing           7.15           1  -4
+ 6    LEC         Ferrari           8.84           4  -2
+ 7    ALO    Aston Martin           9.71           6  -1
+ 8    HAD    Racing Bulls          10.73          17   9
+ 9    HAM         Ferrari          10.76           8  -1
+10    LAW    Racing Bulls          10.88          18   8
+11    SAI        Williams          11.55          13   2
+12    HUL     Kick Sauber          12.90           9  -3
+13    GAS          Alpine          13.11          19   6
+14    ALB        Williams          14.04          16   2
+15    TSU Red Bull Racing          14.16          14  -1
+16    STR    Aston Martin          14.29          10  -6
+17    OCO    Haas F1 Team          14.32           7 -10
+18    BEA    Haas F1 Team          14.34          12  -6
+19    COL          Alpine          14.74          20   1
+20    BOR     Kick Sauber          14.80          11  -9
 ```
 
-Feel free to add your own models and code!
+Feel free to contribute your own models and code!
