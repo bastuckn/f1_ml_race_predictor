@@ -54,8 +54,9 @@ def build_feature_table(debug: bool = False):
     # Merge qualifying data into same rows
     quali_df = load_qualifying_results()
 
-    print("Size of race df:", len(race_df))
-    print("Size of quali df:", len(quali_df))
+    if debug:
+        print("Size of race df:", len(race_df))
+        print("Size of quali df:", len(quali_df))
 
     df = race_df.merge(
         quali_df,

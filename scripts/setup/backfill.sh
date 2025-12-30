@@ -1,9 +1,3 @@
-# Installation
-
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-
 # Fill the cache
 # Done step-by-step because of some weird server-side bug
 
@@ -21,12 +15,3 @@ python3 -m scripts.backfill 2023 2023 Q
 python3 -m scripts.backfill 2024 2024 Q
 python3 -m scripts.backfill 2025 2025 Q
 python3 -m scripts.backfill 2026 2026 Q
-
-# Build Features
-
-python3 -m scripts.bootstrap_db
-python3 -m scripts.build_features
-
-# Train model
-
-python -m scripts.train_model
