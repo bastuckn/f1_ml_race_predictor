@@ -1,9 +1,11 @@
+import os
 import argparse
 import pandas as pd
 import joblib
 import fastf1
 
 from src.feature_engineering.build_features import build_feature_table
+from src.database.predictions import store_predictions
 
 def main(year: int, round_: int, model_path: str):
 
@@ -56,6 +58,20 @@ def main(year: int, round_: int, model_path: str):
         .sort_values("position_pred")
         .reset_index(drop=True)
     )
+
+    # Store predictions BEFORE formatting
+    model_version = os.path.basename(model_path)
+    circuit = get_circuit(df_session)
+
+    store_predictions(
+        year=year,
+        round_=round_,
+        track=circuit,
+        model_version=model_version,
+        df_predictions=df_out
+    )
+
+    # Pretty output
     df_out.insert(0, "P", range(1, len(df_out) + 1))
     df_out["position_pred"] = df_out["position_pred"].round(2)
 
@@ -88,15 +104,21 @@ def get_year(df_session):
     return df_session["year"].iloc[0]
 
 def get_circuit(df_session):
-     # Identify circuit one-hot columns
     circuit_cols = [c for c in df_session.columns if c.startswith("circuit_")]
 
-    # Extract the circuit name
-    df_session["circuit_name"] = df_session[circuit_cols].idxmax(axis=1).str.replace("circuit_", "")
+    if not circuit_cols:
+        raise ValueError("No circuit_* columns found in feature table")
 
-    # Since all rows are for the same session, take the first one
-    circuit = df_session["circuit_name"].iloc[0]
-    
+    # Ensure numeric (important!)
+    circuit_df = df_session[circuit_cols].apply(pd.to_numeric, errors="coerce").fillna(0)
+
+    circuit = (
+        circuit_df
+        .idxmax(axis=1)
+        .str.replace("circuit_", "")
+        .iloc[0]
+    )
+
     return circuit
 
 def add_driver_columns(df_session):
