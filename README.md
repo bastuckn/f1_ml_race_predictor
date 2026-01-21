@@ -13,12 +13,15 @@ niklas.bastuck@gmail.com
 - Prediction step and output
 - Hard-code driver lineup for 2026 (to bridge the gap for the first race)
 - Deployment and remote access on Raspi server via `connect.raspberrypi.com`
+- Prediction storage functions
 
 ### To-Do:
 
-- Background prediction service on a Raspberry Pi
-- Persistent storage of predictions
-- An API to retrieve the latest predictions
+- Extract prediction logic into one callable function
+- Implement predict_now CLI
+- Implement retrieval CLI
+- Add daemon
+- Add systemd unit
 
 # Install Dependencies
 
