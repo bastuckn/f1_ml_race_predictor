@@ -7,7 +7,7 @@ import fastf1
 from src.feature_engineering.build_features import build_feature_table
 from src.database.predictions import store_predictions
 
-def main(year: int, round_: int, model_path: str):
+def main(year: int, round_: int, model_path: str, do_not_save: bool):
 
     # 1. Load feature table (pre-weekend features only)
     df_features = build_feature_table()
@@ -59,17 +59,18 @@ def main(year: int, round_: int, model_path: str):
         .reset_index(drop=True)
     )
 
-    # Store predictions BEFORE formatting
-    model_version = os.path.basename(model_path)
-    circuit = get_circuit(df_session)
+    if not do_not_save:
+        # Store predictions BEFORE formatting
+        model_version = os.path.basename(model_path)
+        circuit = get_circuit(df_session)
 
-    store_predictions(
-        year=year,
-        round_=round_,
-        track=circuit,
-        model_version=model_version,
-        df_predictions=df_out
-    )
+        store_predictions(
+            year=year,
+            round_=round_,
+            track=circuit,
+            model_version=model_version,
+            df_predictions=df_out
+        )
 
     # Pretty output
     df_out.insert(0, "P", range(1, len(df_out) + 1))
@@ -186,5 +187,6 @@ if __name__ == "__main__":
     parser.add_argument("year", type=int, help="Season year")
     parser.add_argument("round", type=int, help="Round number")
     parser.add_argument("model_path", type=str, help="Path to the model to be used for prediction")
+    parser.add_argument("--do_not_save", default=False, action=argparse.BooleanOptionalAction, help="Whether to store a prediction in the database")
     args = parser.parse_args()
-    main(args.year, args.round, args.model_path)
+    main(args.year, args.round, args.model_path, args.do_not_save)
