@@ -36,4 +36,3 @@ def get_next_race():
         "circuit": next_race["EventName"],
         "event_date": next_race["EventDate"],
     }
- 
