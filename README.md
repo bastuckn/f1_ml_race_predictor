@@ -88,16 +88,20 @@ python3 -m scripts/train_model.py
 
 Alternatively, you can run `./scripts/setup/train_model.sh` from the project root.
 
-## Predict Race Outcome (Pre-Weekend)
+## Predict Rrce outcome (pre-weekend)
+
+### Next race:
 
 ```
-python -m scripts/predict_pre_weekend.py <year> <round>
+python3 -m scripts.predict_next_race <model_path>
 ```
 
-### Example:
+### Any race:
+
+(This takes only data leading up to this event)
 
 ```
-python -m scripts/predict_pre_weekend.py 2025 24
+python -m scripts.predict_pre_weekend <year> <round> <model_path>
 ```
 
 Output:
@@ -126,6 +130,12 @@ Output:
 18    BEA    Haas F1 Team          14.34          12  -6
 19    COL          Alpine          14.74          20   1
 20    BOR     Kick Sauber          14.80          11  -9
+```
+
+## Show a previous prediction
+
+```
+python3 -m scripts.show_prediction --next
 ```
 
 Feel free to contribute your own models and code!

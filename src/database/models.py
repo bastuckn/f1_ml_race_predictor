@@ -55,6 +55,7 @@ class Prediction(Base):
     track = Column(String, nullable=False)
 
     driver = Column(String, nullable=False)
+    team = Column(String, nullable=False)
     predicted_position = Column(Float, nullable=False)
 
     model_version = Column(String, nullable=False)

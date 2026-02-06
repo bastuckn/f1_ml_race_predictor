@@ -17,6 +17,7 @@ def get_predictions_for_race(
                 round,
                 track,
                 driver,
+                team,
                 predicted_position,
                 model_version,
                 created_at
