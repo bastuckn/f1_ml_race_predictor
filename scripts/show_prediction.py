@@ -1,4 +1,5 @@
 import argparse
+import pandas as pd
 
 from src.database.predictions import get_prediction
 from src.predictions.next_race import get_next_race
@@ -13,10 +14,18 @@ def main(year, round_, model_version, next_race):
     else:
         track = None
 
-    df = get_prediction(year, round_, model_version)
+    
+    rows = get_prediction(year, round_, model_version)
 
-    if track is None:
-        track = df["track"].iloc[0]
+    df = pd.DataFrame([
+        {
+            "driver": r.driver,
+            "team": r.team,
+            "predicted_position": r.predicted_position,
+            "model_version": r.model_version,
+        }
+        for r in rows
+    ])
 
     format_prediction_table(df, year, round_, track)
 
