@@ -1,10 +1,9 @@
 from datetime import datetime
-from sqlalchemy import func
-from sqlalchemy.orm import Session
 import pandas as pd
+from src.database.models import RaceResult
 
 from src.database.connection import get_db_session
-from src.database.models import Prediction  # if ORM exists
+from src.database.models import Prediction
 
 def store_predictions(
     year: int,
@@ -52,8 +51,6 @@ def store_predictions(
 
     finally:
         session.close()
-
-from sqlalchemy import func
 
 def get_prediction(year: int, round_: int, model_version: str | None = None):
     session = get_db_session()
@@ -109,6 +106,33 @@ def prediction_exists(year: int, round_: int) -> bool:
             is not None
         )
         return exists
+
+    finally:
+        session.close()
+
+def get_last_prediction():
+
+    session = get_db_session()
+
+    try:
+        # Find most recent race in results table
+        last_race = (
+            session.query(RaceResult.year, RaceResult.round, RaceResult.circuit)
+            .distinct()
+            .order_by(RaceResult.year.desc(), RaceResult.round.desc())
+            .first()
+        )
+
+        if last_race is None:
+            return None
+
+        year, round_, track = last_race
+
+        return {
+            "year": year,
+            "round": round_,
+            "track": track,
+        }
 
     finally:
         session.close()

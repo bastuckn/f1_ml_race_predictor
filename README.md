@@ -15,13 +15,6 @@ niklas.bastuck@gmail.com
 - Deployment and remote access on Raspi server via `connect.raspberrypi.com`
 - Prediction storage and retrieval functions
 
-### To-Do:
-
-- Implement predict_now CLI
-- Implement retrieval CLI
-- Add daemon
-- Add systemd unit
-
 # Install Dependencies
 
 ```
