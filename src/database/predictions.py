@@ -93,3 +93,22 @@ def get_prediction(year: int, round_: int, model_version: str | None = None):
 
     session.close()
     return rows
+
+# ensures that we do not update the prediction throughout the weekend:
+def prediction_exists(year: int, round_: int) -> bool:
+    session = get_db_session()
+
+    try:
+        exists = (
+            session.query(Prediction)
+            .filter(
+                Prediction.year == year,
+                Prediction.round == round_,
+            )
+            .first()
+            is not None
+        )
+        return exists
+
+    finally:
+        session.close()

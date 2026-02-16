@@ -88,7 +88,7 @@ python3 -m scripts/train_model.py
 
 Alternatively, you can run `./scripts/setup/train_model.sh` from the project root.
 
-## Predict Rrce outcome (pre-weekend)
+## Predict Race outcome (pre-weekend)
 
 ### Next race:
 
@@ -139,3 +139,36 @@ python3 -m scripts.show_prediction --next
 ```
 
 Feel free to contribute your own models and code!
+
+# Running the predictor in the background as a service
+
+You can run the predictor in the background, e.g. on a raspi, so you never forget to run a prediction and it is always ready to be accessed. 
+
+Create the service:
+
+```
+sudo nano /etc/systemd/system/f1-predict.service
+```
+
+```
+[Unit]
+Description=F1 Prediction Service
+After=network.target
+
+[Service]
+User=pi
+WorkingDirectory=/home/pi/f1_ml_race_predictor
+ExecStart=/home/pi/f1_ml_race_predictor/.venv/bin/python -m scripts.run_prediction_service models/model.pkl
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+```
+
+And enable it:
+
+```
+sudo systemctl daemon-reexec
+sudo systemctl enable f1-predict
+sudo systemctl start f1-predict
+```
