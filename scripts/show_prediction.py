@@ -6,6 +6,13 @@ from src.predictions.next_race import get_next_race
 from src.predictions.display import format_prediction_table
 
 def main(year, round_, model_version, next_race, last_race):
+
+    df, track = get_latest_prediction_df(year, round_, model_version, next_race, last_race)
+
+    format_prediction_table(df, year, round_, track)
+
+def get_latest_prediction_df(year, round_, model_version, next_race, last_race):
+
     if next_race:
         race = get_next_race()
         year = race["year"]
@@ -25,7 +32,6 @@ def main(year, round_, model_version, next_race, last_race):
     else:
         track = None
 
-    
     rows = get_prediction(year, round_, model_version)
 
     df = pd.DataFrame([
@@ -38,7 +44,7 @@ def main(year, round_, model_version, next_race, last_race):
         for r in rows
     ])
 
-    format_prediction_table(df, year, round_, track)
+    return df, track
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Show stored F1 predictions")
