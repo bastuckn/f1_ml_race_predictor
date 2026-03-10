@@ -115,8 +115,8 @@ def get_latest_known_race(df_features):
         df_features
         .sort_values(["year", "round"])
         .groupby(["year", "round"])
-        .tail(20)  # one row per driver
-        .iloc[-20:]
+        .tail(22)  # one row per driver
+        .iloc[-22:]
     )
 
 def adapt_for_future_race(df_last, target_year, target_round):

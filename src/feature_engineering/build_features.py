@@ -11,9 +11,65 @@ from src.feature_engineering.aggregations import (
 )
 
 from src.feature_engineering.encoders import encode_categoricals
+from src.data_ingestion.fetch_fastf1 import load_session, fetch_latest_race_results
 
 def load_race_results():
     session = get_db_session()
+
+    # --- check latest race stored in DB ---
+    latest = (
+        session.query(RaceResult.year, RaceResult.round)
+        .order_by(RaceResult.year.desc(), RaceResult.round.desc())
+        .first()
+    )
+
+    latest_year_db = latest.year if latest else None
+    latest_round_db = latest.round if latest else None
+
+    # --- fetch results from API ---
+
+    df_latest = fetch_latest_race_results()
+
+    if df_latest["round"].iloc[0] > latest_round_db:
+        insert_into_db(df_latest)
+
+    # --- determine newest race from API ---
+    latest_api = df_latest.sort_values(["year", "round"]).iloc[-1]
+    latest_year_api = latest_api["year"]
+    latest_round_api = latest_api["round"]
+
+    # --- check if new data exists ---
+    if (
+        latest_year_db is None
+        or latest_year_api > latest_year_db
+        or (latest_year_api == latest_year_db and latest_round_api > latest_round_db)
+    ):
+        print("New race results detected. Updating database...")
+
+        for _, row in df_latest.iterrows():
+            exists = session.query(RaceResult).filter_by(
+                year=row["year"],
+                round=row["round"],
+                driver=row["driver"]
+            ).first()
+
+            if not exists:
+                session.add(
+                    RaceResult(
+                        year=row["year"],
+                        round=row["round"],
+                        circuit=row["circuit"],
+                        driver=row["driver"],
+                        team=row["team"],
+                        grid=row["grid"],
+                        position=row["position"],
+                        points=row["points"],
+                    )
+                )
+
+        session.commit()
+
+    # --- load full table ---
     rows = session.query(RaceResult).all()
     session.close()
 
@@ -95,3 +151,17 @@ def additional_features(df):
 
 def save_features(df, path="data/processed/features.csv"):
     df.to_csv(path, index=False)
+
+def insert_into_db(df_latest):
+    """
+    Insert the latest race results into the database.
+    df_latest: pd.DataFrame with columns:
+      'year', 'round', 'circuit', 'driver', 'team', 'grid', 'position', 'points'
+    """
+    # Convert DataFrame to list of dicts
+    rows = df_latest.to_dict(orient="records")
+
+    # Use your existing insertion function
+    from src.database.queries import insert_race_results
+
+    insert_race_results(rows)
